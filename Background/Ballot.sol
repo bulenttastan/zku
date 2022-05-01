@@ -12,17 +12,12 @@ contract Ballot {
         startTime = block.timestamp;
     }
 
-    /**
-     * @dev Give your vote (including votes delegated to you) to proposal 'proposals[proposal].name'.
-     * @param proposal index of proposal in the proposals array
-     */
-    function vote(uint proposal) public {
-        require(!voteEnded(), "Voting period ended");
-
+    function vote(uint proposal) public voteHasntEnded() {
         // ... existing code check voting rights and registers the vote
     }
 
-    function voteEnded() public view returns (bool) {
-      return startTime + 5 minutes < block.timestamp;
+    modifier voteHasntEnded() {
+      require(block.timestamp < startTime + 5 minutes, "Voting period ended");
+        _;
     }
 }
