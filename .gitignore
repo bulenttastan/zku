@@ -6,3 +6,10 @@ yarn.lock
 #Hardhat files
 cache
 artifacts
+**/circuits/*_js
+*.zkey
+*.r1cs
+*.ptau
+*.sym
+verification_key.json
+verifier.sol
