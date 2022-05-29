@@ -1,15 +1,30 @@
 .DS_STORE
 .env
 node_modules
+package-lock.json
 yarn.lock
 
-#Hardhat files
-cache
+# Hardhat files
 artifacts
-**/circuits/*_js
-*.zkey
+cache
+
+# Circuit files
+**/*_js
 *.r1cs
 *.ptau
 *.sym
+*.wasm
+*.zkey
+circuit.json
+input.json
+proof.json
+proving_key.json
+public.json
 verification_key.json
 verifier.sol
+# witness.json
+witness.wtns
+
+debug.js
+challenge*
+response*
