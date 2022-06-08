@@ -8,11 +8,26 @@ include "./hasher.circom";
 template DualMux() {
     signal input in[2];
     signal input s;
-    signal output out[2]; 
+    signal output out[2];
 
     s * (1 - s) === 0;
     out[0] <== (in[1] - in[0])*s + in[0];
     out[1] <== (in[0] - in[1])*s + in[1];
+}
+
+// Logical OR on multiple elements: in[0] | in[1] ... | in[n-1]
+template Or(n) {
+    signal input in[n];
+    signal output out;
+    signal ors[n];
+    ors[0] <== in[0];
+
+    for (var i = 1; i < n; i++) {
+        // or <== a + b - a*b; // Took from circomlib/gates
+        ors[i] <== ors[i-1] + in[i] - ors[i-1]*in[i];
+    }
+
+    out <== ors[n-1];
 }
 
 // Verifies that merkle proof is correct for given merkle root and a leaf
@@ -47,6 +62,19 @@ template ManyMerkleTreeChecker(levels, length, nInputs) {
     // [assignment] verify that the resultant hash (computed merkle root)
     // is in the set of roots received as input
     // Note that running test.sh should create a valid proof in current circuit, even though it doesn't do anything.
+    signal root <== hashers[levels-1].hash;
+
+    component match[length];
+    component or = Or(length);
+    for (var i = 0; i < length; i++) {
+        match[i] = IsEqual();
+        match[i].in[0] <== root;
+        match[i].in[1] <== roots[i];
+
+        or.in[i] <== match[i].out;
+    }
+
+    out <== or.out;
 }
 
 component main = ManyMerkleTreeChecker(2, 2, 3);

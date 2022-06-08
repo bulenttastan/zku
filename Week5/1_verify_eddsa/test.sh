@@ -1,11 +1,11 @@
-# set -e makes sure scripts stop if any errors are met. 
+# set -e makes sure scripts stop if any errors are met.
 set -e
-if [ -f ../powersOfTau28_hez_final_16.ptau ]; then
-    echo "powersOfTau28_hez_final_16.ptau already exists. Skipping."
+if [ -f ../powersOfTau28_hez_final_14.ptau ]; then
+    echo "powersOfTau28_hez_final_14.ptau already exists. Skipping."
 else
     pushd ../
-    echo 'Downloading powersOfTau28_hez_final_16.ptau'
-    wget https://hermez.s3-eu-west-1.amazonaws.com/powersOfTau28_hez_final_16.ptau
+    echo 'Downloading powersOfTau28_hez_final_14.ptau'
+    wget https://hermez.s3-eu-west-1.amazonaws.com/powersOfTau28_hez_final_14.ptau
     popd
 fi
 
@@ -21,11 +21,11 @@ node generate_witness.js eddsa.wasm ../input.json ../witness.wtns
 cd ..
 #
 echo "Setting up circuit specific cerimony"
-snarkjs groth16 setup eddsa.r1cs ../powersOfTau28_hez_final_16.ptau eddsa_0000.zkey
+snarkjs groth16 setup eddsa.r1cs ../powersOfTau28_hez_final_14.ptau eddsa_0000.zkey
 echo "Contributing to circuit specific cerimony"
 echo "test" | snarkjs zkey contribute eddsa_0000.zkey eddsa_final.zkey --name="1st Contributor Name" -v
 echo "Verifying zkey"
-snarkjs zkey verify eddsa.r1cs ../powersOfTau28_hez_final_16.ptau eddsa_final.zkey
+snarkjs zkey verify eddsa.r1cs ../powersOfTau28_hez_final_14.ptau eddsa_final.zkey
 echo "Exporting verfification key"
 snarkjs zkey export verificationkey eddsa_final.zkey verification_key.json
 echo "Proving witness"
